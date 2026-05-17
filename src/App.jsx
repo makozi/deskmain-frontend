@@ -1,51 +1,78 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Navbar from './components/Navbar'
-import Footer from './components/Footer'
-import HomePage from './pages/HomePage'
-import LoginPage from './pages/auth/LoginPage'
-import RegisterPage from './pages/auth/RegisterPage'
-import MerchantDashboard from './pages/merchant/Dashboard'
-import ProductManagement from './pages/merchant/ProductManagement'
-import Orders from './pages/merchant/Orders'
-import Payouts from './pages/merchant/Payouts'
-import ShoppingCart from './pages/customer/Cart'
-import Checkout from './pages/customer/Checkout'
-import Order from './pages/customer/Order'
-import AdminDashboard from './pages/admin/Dashboard'
-import ErrorPage from './pages/ErrorPage'
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useAuthStore } from './store/authStore';
 
-export default function App() {
+// Pages
+import LoginPage from './pages/auth/LoginPage';
+import RegisterPage from './pages/auth/RegisterPage';
+import HomePage from './pages/HomePage';
+import ProductDetailPage from './pages/ProductDetailPage';
+import CartPage from './pages/CartPage';
+import CheckoutPage from './pages/CheckoutPage';
+import MerchantDashboardPage from './pages/merchant/MerchantDashboardPage';
+import AdminDashboardPage from './pages/admin/AdminDashboardPage';
+
+// Protected Route Component
+const ProtectedRoute = ({ children, requiredRole }) => {
+  const { isAuthenticated, user } = useAuthStore();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (requiredRole && user?.role !== requiredRole) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
+
+function App() {
   return (
     <Router>
-      <div className="flex flex-col min-h-screen bg-gray-50">
-        <Navbar />
-        <main className="flex-grow">
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/products/:id" element={<ProductDetailPage />} />
 
-            {/* Customer Routes */}
-            <Route path="/cart" element={<ShoppingCart />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/orders/:id" element={<Order />} />
+        {/* Cart & Checkout */}
+        <Route path="/cart" element={<CartPage />} />
+        <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute>
+              <CheckoutPage />
+            </ProtectedRoute>
+          }
+        />
 
-            {/* Merchant Routes */}
-            <Route path="/merchant/dashboard" element={<MerchantDashboard />} />
-            <Route path="/merchant/products" element={<ProductManagement />} />
-            <Route path="/merchant/orders" element={<Orders />} />
-            <Route path="/merchant/payouts" element={<Payouts />} />
+        {/* Merchant Routes */}
+        <Route
+          path="/merchant/dashboard"
+          element={
+            <ProtectedRoute requiredRole="merchant">
+              <MerchantDashboardPage />
+            </ProtectedRoute>
+          }
+        />
 
-            {/* Admin Routes */}
-            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        {/* Admin Routes */}
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute requiredRole="super_admin">
+              <AdminDashboardPage />
+            </ProtectedRoute>
+          }
+        />
 
-            {/* Error Route */}
-            <Route path="*" element={<ErrorPage />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </Router>
-  )
+  );
 }
+
+export default App;
