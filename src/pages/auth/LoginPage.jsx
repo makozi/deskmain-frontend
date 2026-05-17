@@ -4,6 +4,7 @@ import { useAuthStore } from '../../store/authStore';
 import { useAppStore } from '../../store/appStore';
 import { Button, Input, Card, LoadingSpinner } from '../../components/ui';
 import { isValidEmail } from '../../utils/helpers';
+import { api } from '../../services/api';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -61,11 +62,27 @@ const LoginPage = () => {
 
     setLoading(true);
     try {
-      await login(formData.email, formData.password);
-      showSuccess('Login successful!');
-      navigate('/dashboard');
+      const response = await api.post('/auth/login', {
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (response.data.requires_2fa) {
+        // Redirect to 2FA verification page
+        navigate('/verify-2fa', {
+          state: {
+            tempToken: response.data.temp_token,
+            method: response.data.two_factor_method,
+          },
+        });
+      } else if (response.data.access_token) {
+        // Login directly
+        login(response.data.access_token, response.data.refresh_token, response.data.user);
+        showSuccess('Login successful!');
+        navigate('/dashboard');
+      }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message || 'Login failed';
+      const errorMessage = error.response?.data?.error?.message || error.message || 'Login failed';
       showError(errorMessage);
       setErrors((prev) => ({
         ...prev,
