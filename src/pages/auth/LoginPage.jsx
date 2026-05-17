@@ -4,7 +4,7 @@ import { useAuthStore } from '../../store/authStore';
 import { useAppStore } from '../../store/appStore';
 import { Button, Input, Card, LoadingSpinner } from '../../components/ui';
 import { isValidEmail } from '../../utils/helpers';
-import { api } from '../../services/api';
+import api from '../../services/api';
 
 const LoginPage = () => {
   const navigate = useNavigate();

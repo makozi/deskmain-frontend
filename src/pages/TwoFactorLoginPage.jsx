@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
-import { api } from '../services/api';
+import api from '../services/api';
 import { useAuthStore } from '../store/authStore';
 import { Input } from '../components/ui';
 

@@ -4,8 +4,8 @@ import { Button, Card, Input, Select, LoadingSpinner, Modal } from '../component
 import { useCartStore } from '../store/cartStore';
 import { useAuthStore } from '../store/authStore';
 import { useAppStore } from '../store/appStore';
-import { paymentService } from '../services/paymentService';
-import { orderService } from '../services/orderService';
+import paymentService from '../services/paymentService';
+import orderService from '../services/orderService';
 
 const CheckoutPage = () => {
   const navigate = useNavigate();

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../services/api';
+import api from '../services/api';
 import { Input, Button, Modal } from '../components/ui';
 
 export default function TwoFactorAuthPage() {

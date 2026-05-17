@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Card, Badge, LoadingSpinner } from '../components/ui';
-import { productService } from '../services/productService';
-import { merchantService } from '../services/merchantService';
+import productService from '../services/productService';
+import merchantService from '../services/merchantService';
 
 const HomePage = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);

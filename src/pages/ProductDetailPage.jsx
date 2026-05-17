@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Card, Badge, LoadingSpinner, Input } from '../components/ui';
-import { productService } from '../services/productService';
+import productService from '../services/productService';
 import { useCartStore } from '../store/cartStore';
 import { useAppStore } from '../store/appStore';
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Card, Badge, LoadingSpinner } from '../../components/ui';
-import { merchantService } from '../../services/merchantService';
+import merchantService from '../../services/merchantService';
 
 const MerchantDashboardPage = () => {
   const [merchant, setMerchant] = useState(null);
